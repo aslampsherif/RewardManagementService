@@ -8,7 +8,6 @@ import com.myStore.rewardManagement.exception.ServiceException;
 import com.myStore.rewardManagement.utility.DataUtility;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.time.Month;
 import java.util.ArrayList;
@@ -35,30 +34,12 @@ public class RewardsService {
             throw new ServiceException("Customer details are not found", HttpStatus.NOT_FOUND);
         }
 
-        List<Transaction> transactionsList = DataUtility.getAllTransactions(customerId);
+        List<Transaction> transactionsList = DataUtility.getAllTransactions(customerId, months);
         if (transactionsList.isEmpty()) {
             throw new ServiceException("Transaction details are not found", HttpStatus.NOT_FOUND);
         }
 
-        List<RewardsResponse> rewardsResponses = new ArrayList<>();
-
-        transactionsList
-                .stream()
-                .collect(Collectors.groupingBy(Transaction::getCustomerId))
-                .forEach((id, transactions) -> {
-                    Map<Month, Double> monthlyRewards = new HashMap<>();
-                    transactions.forEach(transaction -> {
-                        Month transactionMonth = transaction.getTransactionTime().getMonth();
-                        double rewardForTransaction = findRewardForTransaction(transaction.getTransactionAmount());
-                        if (CollectionUtils.isEmpty(months)) {
-                            monthlyRewards.put(transactionMonth, monthlyRewards.getOrDefault(transactionMonth, 0.0) + rewardForTransaction);
-                        } else if (months.contains(transactionMonth)) {
-                            monthlyRewards.put(transactionMonth, monthlyRewards.getOrDefault(transactionMonth, 0.0) + rewardForTransaction);
-                        }
-                    });
-                    addRewardsResponses(rewardsResponses, customersList.get(id), monthlyRewards);
-                });
-        return rewardsResponses;
+        return populateRewardResponseList(transactionsList, customersList);
     }
 
     /**
@@ -79,8 +60,17 @@ public class RewardsService {
         if (transactionsList.isEmpty()) {
             throw new ServiceException("Transaction details are not found", HttpStatus.NOT_FOUND);
         }
-        List<RewardsResponse> rewardsResponses = new ArrayList<>();
 
+        return populateRewardResponseList(transactionsList, customersList);
+    }
+
+    /**
+     * @param transactionsList list of transactions
+     * @param customersList    map with key as customer id and value as customer details
+     * @return final list of reward responses
+     */
+    private List<RewardsResponse> populateRewardResponseList(List<Transaction> transactionsList, Map<Integer, Customer> customersList) {
+        List<RewardsResponse> rewardsResponses = new ArrayList<>();
         transactionsList
                 .stream()
                 .collect(Collectors.groupingBy(Transaction::getCustomerId))
@@ -91,8 +81,9 @@ public class RewardsService {
                         double rewardForTransaction = findRewardForTransaction(transaction.getTransactionAmount());
                         monthlyRewards.put(transactionMonth, monthlyRewards.getOrDefault(transactionMonth, 0.0) + rewardForTransaction);
                     });
-                    addRewardsResponses(rewardsResponses, customersList.get(id), monthlyRewards);
+                    addRewardResponsesToList(rewardsResponses, customersList.get(id), monthlyRewards);
                 });
+
         return rewardsResponses;
     }
 
@@ -110,11 +101,11 @@ public class RewardsService {
     }
 
     /**
-     * @param rewardsResponseList: List to which responses have to added
+     * @param rewardsResponseList: List to which responses have to be added
      * @param customer:            Customer details
      * @param monthlyRewards:      map with key as month and value as reward points for that month
      */
-    private void addRewardsResponses(List<RewardsResponse> rewardsResponseList, Customer customer, Map<Month, Double> monthlyRewards) {
+    private void addRewardResponsesToList(List<RewardsResponse> rewardsResponseList, Customer customer, Map<Month, Double> monthlyRewards) {
 
         List<MonthlyReward> monthlyRewardsList = new ArrayList<>();
         monthlyRewards.forEach((month, rewards) -> {
@@ -132,6 +123,5 @@ public class RewardsService {
                 .monthlyRewardPoints(monthlyRewardsList)
                 .totalRewardPoints(totalMonthlyRewards)
                 .build());
-
     }
 }

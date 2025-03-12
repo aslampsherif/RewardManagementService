@@ -7,6 +7,7 @@ import com.myStore.rewardManagement.dto.Transaction;
 import com.myStore.rewardManagement.exception.ServiceException;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,18 +27,27 @@ public class DataUtility {
 
     /**
      * @param customerId = customer ID (optional)
+     * @param monthList  = list of months (optional)
      * @return List of transactions
-     * Method will return list of transactions of all customers if customer id is not provided. Otherwise, it will return
-     * all transactions of individual customer
+     * Method will return list of all transactions of all customers if customer id and month list are not provided.
+     * if parameters are provided, it will return transactions of specified customer for given months
      */
-    public static List<Transaction> getAllTransactions(int customerId) {
+    public static List<Transaction> getAllTransactions(int customerId, List<Month> monthList) {
         try {
             InputStream transactionsInputStream = new ClassPathResource("data/Transactions.json").getInputStream();
             List<Transaction> transactionsList = mapper.readValue(transactionsInputStream, mapper.getTypeFactory().constructCollectionType(List.class, Transaction.class));
-            if (customerId == 0) {
-                return transactionsList;
+            List<Transaction> filteredTransactionList;
+            if (CollectionUtils.isEmpty(monthList)) {
+                filteredTransactionList = transactionsList;
             } else {
-                return transactionsList.stream()
+                filteredTransactionList = transactionsList.stream()
+                        .filter(transaction -> monthList.contains(transaction.getTransactionTime().getMonth()))
+                        .toList();
+            }
+            if (customerId == 0) {
+                return filteredTransactionList;
+            } else {
+                return filteredTransactionList.stream()
                         .filter(transaction -> transaction.getCustomerId() == customerId)
                         .toList();
             }
