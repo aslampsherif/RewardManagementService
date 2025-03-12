@@ -27,6 +27,7 @@ Follow below steps to run application locally
 - dto (Contains data transfer classes)
   - Address.java: Represents address of customer.
   - Customer.java: Represents customer details like name, address.
+  - MonthlyReward.java: Represents rewards for each month.
   - RewardsResponse.java: Represents the response for endpoints related to rewards.
   - Transaction.java: Represents transaction details of customer like transaction amount, transaction time. 
 - exception (Contains classes related to exceptions)
