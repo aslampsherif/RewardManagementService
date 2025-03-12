@@ -13,7 +13,7 @@ This is a spring boot microservice to handle operations related to customer's re
 
 Follow below steps to run application locally
 1) Clone repository and import to IDE: ``` git clone https://github.com/aslampsherif/RewardManagementService.git ```
-2) Right click on OrderManagementServiceApplication.java and run as spring boot application
+2) Right click on RewardManagementServiceApplication.java and run as spring boot application
 3) Go to http://localhost:8080/swagger-ui/index.html#/ to see swagger documentation.
     ![img.png](readme/swagger.png)
 
