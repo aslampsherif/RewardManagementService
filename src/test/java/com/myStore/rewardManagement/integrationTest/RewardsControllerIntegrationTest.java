@@ -100,6 +100,30 @@ public class RewardsControllerIntegrationTest {
     }
 
     @Test
+    @DisplayName("Test getRewards when Customer details not found")
+    void testGetRewards_failure3() throws Exception {
+        mockMvc.perform(get("/rewards")
+                        .param("months", "MARCH")
+                        .param("customerId", "10"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.exceptionClass").value("ServiceException"))
+                .andExpect(jsonPath("$.message").value("Customer details are not found"))
+                .andExpect(jsonPath("$.httpStatus").value("NOT_FOUND"));
+    }
+
+    @Test
+    @DisplayName("Test getRewards when Transaction details not found")
+    void testGetRewards_failure4() throws Exception {
+        mockMvc.perform(get("/rewards")
+                        .param("months", "MARCH")
+                        .param("customerId", "4"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.exceptionClass").value("ServiceException"))
+                .andExpect(jsonPath("$.message").value("Transaction details are not found"))
+                .andExpect(jsonPath("$.httpStatus").value("NOT_FOUND"));
+    }
+
+    @Test
     @DisplayName("Test getRewardsForPeriod when id is not provided")
     void testGetRewardsForPeriod_success1() throws Exception {
         mockMvc.perform(get("/rewards/period")
@@ -165,5 +189,31 @@ public class RewardsControllerIntegrationTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.exceptionClass").value("MethodArgumentTypeMismatchException"))
                 .andExpect(jsonPath("$.httpStatus").value("BAD_REQUEST"));
+    }
+
+    @Test
+    @DisplayName("Test getRewardsForPeriod when customer details not found")
+    void testGetRewardsForPeriod_failure4() throws Exception {
+        mockMvc.perform(get("/rewards/period")
+                        .param("startMonth", "JANUARY")
+                        .param("endMonth", "FEBRUARY")
+                        .param("customerId", "10"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.exceptionClass").value("ServiceException"))
+                .andExpect(jsonPath("$.message").value("Customer details are not found"))
+                .andExpect(jsonPath("$.httpStatus").value("NOT_FOUND"));
+    }
+
+    @Test
+    @DisplayName("Test getRewardsForPeriod when transaction details not found")
+    void testGetRewardsForPeriod_failure5() throws Exception {
+        mockMvc.perform(get("/rewards/period")
+                        .param("startMonth", "JANUARY")
+                        .param("endMonth", "FEBRUARY")
+                        .param("customerId", "4"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.exceptionClass").value("ServiceException"))
+                .andExpect(jsonPath("$.message").value("Transaction details are not found"))
+                .andExpect(jsonPath("$.httpStatus").value("NOT_FOUND"));
     }
 }

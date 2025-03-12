@@ -4,7 +4,9 @@ import com.myStore.rewardManagement.dto.Customer;
 import com.myStore.rewardManagement.dto.MonthlyReward;
 import com.myStore.rewardManagement.dto.RewardsResponse;
 import com.myStore.rewardManagement.dto.Transaction;
+import com.myStore.rewardManagement.exception.ServiceException;
 import com.myStore.rewardManagement.utility.DataUtility;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -27,8 +29,16 @@ public class RewardsService {
      * Method will return details of all customers and rewards details if id and month is not provided.
      */
     public List<RewardsResponse> getRewards(List<Month> months, int customerId) {
-        List<Transaction> transactionsList = DataUtility.getAllTransactions(customerId);
+
         Map<Integer, Customer> customersList = DataUtility.getCustomerDetails(customerId);
+        if (customersList.isEmpty()) {
+            throw new ServiceException("Customer details are not found", HttpStatus.NOT_FOUND);
+        }
+
+        List<Transaction> transactionsList = DataUtility.getAllTransactions(customerId);
+        if (transactionsList.isEmpty()) {
+            throw new ServiceException("Transaction details are not found", HttpStatus.NOT_FOUND);
+        }
 
         List<RewardsResponse> rewardsResponses = new ArrayList<>();
 
@@ -46,7 +56,7 @@ public class RewardsService {
                             monthlyRewards.put(transactionMonth, monthlyRewards.getOrDefault(transactionMonth, 0.0) + rewardForTransaction);
                         }
                     });
-                    addRewardsResponses(rewardsResponses,customersList.get(id),monthlyRewards);
+                    addRewardsResponses(rewardsResponses, customersList.get(id), monthlyRewards);
                 });
         return rewardsResponses;
     }
@@ -59,8 +69,16 @@ public class RewardsService {
      * Method will return details of all customers and reward details if id is not provided
      */
     public List<RewardsResponse> getRewardsForPeriod(int customerId, Month startMonth, Month endMonth) {
-        List<Transaction> transactionsList = DataUtility.getAllTransactionsForPeriod(customerId, startMonth, endMonth);
+
         Map<Integer, Customer> customersList = DataUtility.getCustomerDetails(customerId);
+        if (customersList.isEmpty()) {
+            throw new ServiceException("Customer details are not found", HttpStatus.NOT_FOUND);
+        }
+
+        List<Transaction> transactionsList = DataUtility.getAllTransactionsForPeriod(customerId, startMonth, endMonth);
+        if (transactionsList.isEmpty()) {
+            throw new ServiceException("Transaction details are not found", HttpStatus.NOT_FOUND);
+        }
         List<RewardsResponse> rewardsResponses = new ArrayList<>();
 
         transactionsList
@@ -73,7 +91,7 @@ public class RewardsService {
                         double rewardForTransaction = findRewardForTransaction(transaction.getTransactionAmount());
                         monthlyRewards.put(transactionMonth, monthlyRewards.getOrDefault(transactionMonth, 0.0) + rewardForTransaction);
                     });
-                    addRewardsResponses(rewardsResponses,customersList.get(id),monthlyRewards);
+                    addRewardsResponses(rewardsResponses, customersList.get(id), monthlyRewards);
                 });
         return rewardsResponses;
     }
@@ -91,6 +109,11 @@ public class RewardsService {
         return 0;
     }
 
+    /**
+     * @param rewardsResponseList: List to which responses have to added
+     * @param customer:            Customer details
+     * @param monthlyRewards:      map with key as month and value as reward points for that month
+     */
     private void addRewardsResponses(List<RewardsResponse> rewardsResponseList, Customer customer, Map<Month, Double> monthlyRewards) {
 
         List<MonthlyReward> monthlyRewardsList = new ArrayList<>();

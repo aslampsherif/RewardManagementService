@@ -1,14 +1,15 @@
 package com.myStore.rewardManagement.service;
 
 import com.myStore.rewardManagement.dto.RewardsResponse;
+import com.myStore.rewardManagement.exception.ServiceException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 
 import java.time.Month;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class RewardsServiceTest {
 
@@ -28,11 +29,11 @@ public class RewardsServiceTest {
         assertEquals("Alberta", rewardsResponseList.getFirst().getCustomerDetails().getAddress().getProvince());
         assertEquals("T3N 2C5", rewardsResponseList.getFirst().getCustomerDetails().getAddress().getZip());
 
-        List<Month> months = List.of(Month.JANUARY,Month.FEBRUARY,Month.MARCH);
-        List<Double> rewards = List.of(25.0,140.0,35.0);
+        List<Month> months = List.of(Month.JANUARY, Month.FEBRUARY, Month.MARCH);
+        List<Double> rewards = List.of(25.0, 140.0, 35.0);
 
         assertTrue(months.contains(rewardsResponseList.getFirst().getMonthlyRewardPoints().getFirst().getMonth()));
-        assertTrue(rewards.contains( rewardsResponseList.getFirst().getMonthlyRewardPoints().getFirst().getRewardPoints()));
+        assertTrue(rewards.contains(rewardsResponseList.getFirst().getMonthlyRewardPoints().getFirst().getRewardPoints()));
         assertEquals(200, rewardsResponseList.getFirst().getTotalRewardPoints());
 
     }
@@ -50,11 +51,11 @@ public class RewardsServiceTest {
         assertEquals("Alberta", rewardsResponseList.getFirst().getCustomerDetails().getAddress().getProvince());
         assertEquals("T3N 2C5", rewardsResponseList.getFirst().getCustomerDetails().getAddress().getZip());
 
-        List<Month> months = List.of(Month.JANUARY,Month.FEBRUARY,Month.MARCH);
-        List<Double> rewards = List.of(25.0,140.0,35.0);
+        List<Month> months = List.of(Month.JANUARY, Month.FEBRUARY, Month.MARCH);
+        List<Double> rewards = List.of(25.0, 140.0, 35.0);
 
         assertTrue(months.contains(rewardsResponseList.getFirst().getMonthlyRewardPoints().getFirst().getMonth()));
-        assertTrue(rewards.contains( rewardsResponseList.getFirst().getMonthlyRewardPoints().getFirst().getRewardPoints()));
+        assertTrue(rewards.contains(rewardsResponseList.getFirst().getMonthlyRewardPoints().getFirst().getRewardPoints()));
         assertEquals(200, rewardsResponseList.getFirst().getTotalRewardPoints());
     }
 
@@ -72,12 +73,12 @@ public class RewardsServiceTest {
         assertEquals("Alberta", rewardsResponseList.getLast().getCustomerDetails().getAddress().getProvince());
         assertEquals("T3N 2C5", rewardsResponseList.getLast().getCustomerDetails().getAddress().getZip());
 
-        List<Month> months = List.of(Month.JANUARY,Month.FEBRUARY);
-        List<Double> rewards = List.of(0.0,189.0);
+        List<Month> months = List.of(Month.JANUARY, Month.FEBRUARY);
+        List<Double> rewards = List.of(0.0, 189.0);
 
         assertEquals(2, rewardsResponseList.getLast().getMonthlyRewardPoints().size());
         assertTrue(months.contains(rewardsResponseList.getLast().getMonthlyRewardPoints().getFirst().getMonth()));
-        assertTrue(rewards.contains( rewardsResponseList.getLast().getMonthlyRewardPoints().getFirst().getRewardPoints()));
+        assertTrue(rewards.contains(rewardsResponseList.getLast().getMonthlyRewardPoints().getFirst().getRewardPoints()));
         assertEquals(189, rewardsResponseList.getLast().getTotalRewardPoints());
     }
 
@@ -101,6 +102,28 @@ public class RewardsServiceTest {
     }
 
     @Test
+    @DisplayName("Test getRewards when customer details not found")
+    void testGetRewards_failure1() {
+
+        ServiceException serviceException = assertThrows(ServiceException.class,
+                () -> rewardsService.getRewards(null, 10));
+
+        assertEquals("Customer details are not found", serviceException.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, serviceException.getHttpStatus());
+    }
+
+    @Test
+    @DisplayName("Test getRewards when transaction details not found")
+    void testGetRewards_failure2() {
+
+        ServiceException serviceException = assertThrows(ServiceException.class,
+                () -> rewardsService.getRewards(null, 4));
+
+        assertEquals("Transaction details are not found", serviceException.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, serviceException.getHttpStatus());
+    }
+
+    @Test
     @DisplayName("Test getRewardsForPeriod when id is provided")
     void testGetRewardsForPeriod_success1() {
 
@@ -114,12 +137,12 @@ public class RewardsServiceTest {
         assertEquals("Alberta", rewardsResponseList.getFirst().getCustomerDetails().getAddress().getProvince());
         assertEquals("T3N 2C5", rewardsResponseList.getFirst().getCustomerDetails().getAddress().getZip());
 
-        List<Month> months = List.of(Month.JANUARY,Month.FEBRUARY,Month.MARCH);
-        List<Double> rewards = List.of(25.0,140.0,35.0);
+        List<Month> months = List.of(Month.JANUARY, Month.FEBRUARY, Month.MARCH);
+        List<Double> rewards = List.of(25.0, 140.0, 35.0);
 
         assertEquals(3, rewardsResponseList.getFirst().getMonthlyRewardPoints().size());
         assertTrue(months.contains(rewardsResponseList.getFirst().getMonthlyRewardPoints().getFirst().getMonth()));
-        assertTrue(rewards.contains( rewardsResponseList.getFirst().getMonthlyRewardPoints().getFirst().getRewardPoints()));
+        assertTrue(rewards.contains(rewardsResponseList.getFirst().getMonthlyRewardPoints().getFirst().getRewardPoints()));
         assertEquals(200, rewardsResponseList.getFirst().getTotalRewardPoints());
     }
 
@@ -136,12 +159,34 @@ public class RewardsServiceTest {
         assertEquals("Alberta", rewardsResponseList.getLast().getCustomerDetails().getAddress().getProvince());
         assertEquals("T3N 2C5", rewardsResponseList.getLast().getCustomerDetails().getAddress().getZip());
 
-        List<Month> months = List.of(Month.FEBRUARY,Month.MARCH);
-        List<Double> rewards = List.of(189.0,290.0);
+        List<Month> months = List.of(Month.FEBRUARY, Month.MARCH);
+        List<Double> rewards = List.of(189.0, 290.0);
 
         assertEquals(2, rewardsResponseList.getLast().getMonthlyRewardPoints().size());
         assertTrue(months.contains(rewardsResponseList.getLast().getMonthlyRewardPoints().getFirst().getMonth()));
-        assertTrue(rewards.contains( rewardsResponseList.getLast().getMonthlyRewardPoints().getFirst().getRewardPoints()));
+        assertTrue(rewards.contains(rewardsResponseList.getLast().getMonthlyRewardPoints().getFirst().getRewardPoints()));
         assertEquals(479, rewardsResponseList.getLast().getTotalRewardPoints());
+    }
+
+    @Test
+    @DisplayName("Test getRewardsForPeriod when customer details not found")
+    void testGetRewardsForPeriod_failure1() {
+
+        ServiceException serviceException = assertThrows(ServiceException.class,
+                () -> rewardsService.getRewardsForPeriod(10, Month.JANUARY, Month.FEBRUARY));
+
+        assertEquals("Customer details are not found", serviceException.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, serviceException.getHttpStatus());
+    }
+
+    @Test
+    @DisplayName("Test getRewardsForPeriod when transaction details not found")
+    void testGetRewardsForPeriod_failure2() {
+
+        ServiceException serviceException = assertThrows(ServiceException.class,
+                () -> rewardsService.getRewardsForPeriod(4, Month.JANUARY, Month.FEBRUARY));
+
+        assertEquals("Transaction details are not found", serviceException.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, serviceException.getHttpStatus());
     }
 }
