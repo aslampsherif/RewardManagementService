@@ -14,5 +14,5 @@ import java.util.Map;
 public class RewardsResponse {
 
     private Customer customerDetails;
-    private Map<String,Double> rewardPoints;
+    private Map<String, Double> rewardPoints;
 }
