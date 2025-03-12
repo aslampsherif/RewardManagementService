@@ -15,7 +15,7 @@ Follow below steps to run application locally
 1) Clone repository and import to IDE: ``` git clone https://github.com/aslampsherif/RewardManagementService.git ```
 2) Right click on OrderManagementServiceApplication.java and run as spring boot application
 3) Go to http://localhost:8080/swagger-ui/index.html#/ to see swagger documentation.
-    ![img.png](img.png)
+    ![img.png](readme/swagger.png)
 
 ### Project structure
 
@@ -36,13 +36,13 @@ Follow below steps to run application locally
 - service (Contains service layer classes)
   - RewardsService.java: Handle business logic to calculate reward points and retrieve all customer details including total rewards.
 - utility (Contains utility classes)
-  - MockDataUtility.java: Used to set up mock data and send to service layer class.
+  - DataUtility.java: Used to set up mock data and send to service layer class.
 
 ### API Details
 
 1. **Rewards controller**
    1. **GET /rewards** :
-   ![img_1.png](img_1.png)
+   ![img_1.png](readme/endpoint1.png)
    
             Description:
                     End point is used to retrieve reward details of all customers for all months.
@@ -75,7 +75,7 @@ Follow below steps to run application locally
                     }
                 ]
       2. **GET /rewards/period** :  
-       ![img_2.png](img_2.png)
+       ![img_2.png](readme/endpoint2.png)
    
                Description:
                        End point is used to retrieve reward details of all customers for specified months.
@@ -106,7 +106,7 @@ Follow below steps to run application locally
                     ]
 ### Initial data setup.
 
-To validate the endpoints, customer([Customers.json](src/main/resources/data/Customers.json)) and transaction([Transactions.json](src/main/resources/data/Transactions.json)) details are stored in json file. Utility class [MockDataUtility.java](src/main/java/com/myStore/rewardManagement/utility/MockDataUtility.java) is used to get these values and send to service layer
+To validate the endpoints, customer([Customers.json](src/main/resources/data/Customers.json)) and transaction([Transactions.json](src/main/resources/data/Transactions.json)) details are stored in json file. Utility class [DataUtility.java](src/main/java/com/myStore/rewardManagement/utility/DataUtility.java) is used to get these values and send to service layer
 
 | Customer | Month 1 Transactions | Month 2 Transactions | Month 3 Transactions |
 |----------|----------------------|----------------------|----------------------| 

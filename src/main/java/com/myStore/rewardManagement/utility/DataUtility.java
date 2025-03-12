@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  * Customer details and transaction details are mocked and placed in resources/data directory
  */
 
-public class MockDataUtility {
+public class DataUtility {
 
     private static final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
 

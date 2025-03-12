@@ -3,7 +3,7 @@ package com.myStore.rewardManagement.service;
 import com.myStore.rewardManagement.dto.Customer;
 import com.myStore.rewardManagement.dto.RewardsResponse;
 import com.myStore.rewardManagement.dto.Transaction;
-import com.myStore.rewardManagement.utility.MockDataUtility;
+import com.myStore.rewardManagement.utility.DataUtility;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -26,8 +26,8 @@ public class RewardsService {
      * Method will return details of all customers and rewards details if id and month is not provided.
      */
     public List<RewardsResponse> getRewards(List<Month> months, int customerId) {
-        List<Transaction> transactionsList = MockDataUtility.getAllTransactions(customerId);
-        Map<Integer, Customer> customersList = MockDataUtility.getCustomerDetails(customerId);
+        List<Transaction> transactionsList = DataUtility.getAllTransactions(customerId);
+        Map<Integer, Customer> customersList = DataUtility.getCustomerDetails(customerId);
 
         List<RewardsResponse> rewardsResponses = new ArrayList<>();
 
@@ -63,8 +63,8 @@ public class RewardsService {
      * Method will return details of all customers and reward details if id is not provided
      */
     public List<RewardsResponse> getRewardsForPeriod(int customerId, Month startMonth, Month endMonth) {
-        List<Transaction> transactionsList = MockDataUtility.getAllTransactionsForPeriod(customerId, startMonth, endMonth);
-        Map<Integer, Customer> customersList = MockDataUtility.getCustomerDetails(customerId);
+        List<Transaction> transactionsList = DataUtility.getAllTransactionsForPeriod(customerId, startMonth, endMonth);
+        Map<Integer, Customer> customersList = DataUtility.getCustomerDetails(customerId);
         List<RewardsResponse> rewardsResponses = new ArrayList<>();
 
         transactionsList
