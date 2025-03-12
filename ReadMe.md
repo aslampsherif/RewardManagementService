@@ -66,12 +66,21 @@ Follow below steps to run application locally
                                 "zip": "T3N 2C5"
                             }
                         },
-                        "rewardPoints": {
-                            "JANUARY": 25,
-                            "MARCH": 35,
-                            "FEBRUARY": 140,
-                            "totalRewardPoints": 200
-                        }
+                        "monthlyRewardPoints": [
+                            {
+                                "month": "JANUARY",
+                                "rewardPoints": 25
+                            },
+                            {
+                                "month": "MARCH",
+                                "rewardPoints": 35
+                            },
+                            {
+                                "month": "FEBRUARY",
+                                "rewardPoints": 140
+                            }
+                        ],
+                        "totalRewardPoints": 200
                     }
                 ]
       2. **GET /rewards/period** :  
@@ -97,11 +106,17 @@ Follow below steps to run application locally
                                     "zip": "T3N 2C5"
                                 }
                             },
-                            "rewardPoints": {
-                                "MARCH": 290,
-                                "FEBRUARY": 189,
-                                "totalRewardPoints": 479
-                            }
+                            "monthlyRewardPoints": [
+                                {
+                                    "month": "MARCH",
+                                    "rewardPoints": 290
+                                },
+                                {
+                                    "month": "FEBRUARY",
+                                    "rewardPoints": 189
+                                }
+                            ],
+                            "totalRewardPoints": 479
                         }
                     ]
 ### Initial data setup.

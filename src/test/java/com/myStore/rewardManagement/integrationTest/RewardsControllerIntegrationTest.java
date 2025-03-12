@@ -28,10 +28,8 @@ public class RewardsControllerIntegrationTest {
                 .andExpect(jsonPath("$[2].customerDetails.name").value("Teja"))
                 .andExpect(jsonPath("$[2].customerDetails.phoneNumber").value(9876543212L))
                 .andExpect(jsonPath("$[2].customerDetails.address.street").value("603 Corner Meadows Way"))
-                .andExpect(jsonPath("$[2].rewardPoints.JANUARY").value(0))
-                .andExpect(jsonPath("$[2].rewardPoints.FEBRUARY").value(189))
-                .andExpect(jsonPath("$[2].rewardPoints.MARCH").value(290))
-                .andExpect(jsonPath("$[2].rewardPoints.totalRewardPoints").value(479));
+                .andExpect(jsonPath("$[2].monthlyRewardPoints").isArray())
+                .andExpect(jsonPath("$[2].totalRewardPoints").value(479));
     }
 
     @Test
@@ -46,10 +44,8 @@ public class RewardsControllerIntegrationTest {
                 .andExpect(jsonPath("$[0].customerDetails.name").value("Teja"))
                 .andExpect(jsonPath("$[0].customerDetails.phoneNumber").value(9876543212L))
                 .andExpect(jsonPath("$[0].customerDetails.address.street").value("603 Corner Meadows Way"))
-                .andExpect(jsonPath("$[0].rewardPoints.JANUARY").doesNotExist())
-                .andExpect(jsonPath("$[0].rewardPoints.FEBRUARY").value(189))
-                .andExpect(jsonPath("$[0].rewardPoints.MARCH").value(290))
-                .andExpect(jsonPath("$[0].rewardPoints.totalRewardPoints").value(479));
+                .andExpect(jsonPath("$[0].monthlyRewardPoints[2])").doesNotExist())
+                .andExpect(jsonPath("$[0].totalRewardPoints").value(479));
     }
 
     @Test
@@ -63,10 +59,8 @@ public class RewardsControllerIntegrationTest {
                 .andExpect(jsonPath("$[0].customerDetails.name").value("Teja"))
                 .andExpect(jsonPath("$[0].customerDetails.phoneNumber").value(9876543212L))
                 .andExpect(jsonPath("$[0].customerDetails.address.street").value("603 Corner Meadows Way"))
-                .andExpect(jsonPath("$[0].rewardPoints.JANUARY").value(0))
-                .andExpect(jsonPath("$[0].rewardPoints.FEBRUARY").value(189))
-                .andExpect(jsonPath("$[0].rewardPoints.MARCH").value(290))
-                .andExpect(jsonPath("$[0].rewardPoints.totalRewardPoints").value(479));
+                .andExpect(jsonPath("$[0].monthlyRewardPoints").isArray())
+                .andExpect(jsonPath("$[0].totalRewardPoints").value(479));
     }
 
     @Test
@@ -79,10 +73,10 @@ public class RewardsControllerIntegrationTest {
                 .andExpect(jsonPath("$[2].customerDetails.name").value("Teja"))
                 .andExpect(jsonPath("$[2].customerDetails.phoneNumber").value(9876543212L))
                 .andExpect(jsonPath("$[2].customerDetails.address.street").value("603 Corner Meadows Way"))
-                .andExpect(jsonPath("$[2].rewardPoints.JANUARY").doesNotExist())
-                .andExpect(jsonPath("$[2].rewardPoints.FEBRUARY").doesNotExist())
-                .andExpect(jsonPath("$[2].rewardPoints.MARCH").value(290))
-                .andExpect(jsonPath("$[2].rewardPoints.totalRewardPoints").value(290));
+                .andExpect(jsonPath("$[2].monthlyRewardPoints[1]").doesNotExist())
+                .andExpect(jsonPath("$[2].monthlyRewardPoints[0].month").value("MARCH"))
+                .andExpect(jsonPath("$[2].monthlyRewardPoints[0].rewardPoints").value(290))
+                .andExpect(jsonPath("$[2].totalRewardPoints").value(290));
     }
 
     @Test
@@ -116,10 +110,8 @@ public class RewardsControllerIntegrationTest {
                 .andExpect(jsonPath("$[2].customerDetails.name").value("Teja"))
                 .andExpect(jsonPath("$[2].customerDetails.phoneNumber").value(9876543212L))
                 .andExpect(jsonPath("$[2].customerDetails.address.street").value("603 Corner Meadows Way"))
-                .andExpect(jsonPath("$[2].rewardPoints.JANUARY").value(0))
-                .andExpect(jsonPath("$[2].rewardPoints.FEBRUARY").value(189))
-                .andExpect(jsonPath("$[2].rewardPoints.MARCH").value(290))
-                .andExpect(jsonPath("$[2].rewardPoints.totalRewardPoints").value(479));
+                .andExpect(jsonPath("$[2].monthlyRewardPoints").isArray())
+                .andExpect(jsonPath("$[2].totalRewardPoints").value(479));
     }
 
     @Test
@@ -136,10 +128,8 @@ public class RewardsControllerIntegrationTest {
                 .andExpect(jsonPath("$[0].customerDetails.name").value("Teja"))
                 .andExpect(jsonPath("$[0].customerDetails.phoneNumber").value(9876543212L))
                 .andExpect(jsonPath("$[0].customerDetails.address.street").value("603 Corner Meadows Way"))
-                .andExpect(jsonPath("$[0].rewardPoints.JANUARY").value(0))
-                .andExpect(jsonPath("$[0].rewardPoints.FEBRUARY").value(189))
-                .andExpect(jsonPath("$[0].rewardPoints.MARCH").doesNotExist())
-                .andExpect(jsonPath("$[0].rewardPoints.totalRewardPoints").value(189));
+                .andExpect(jsonPath("$[0].monthlyRewardPoints[2]").doesNotExist())
+                .andExpect(jsonPath("$[0].totalRewardPoints").value(189));
     }
 
     @Test

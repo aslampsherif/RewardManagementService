@@ -1,6 +1,7 @@
 package com.myStore.rewardManagement.service;
 
 import com.myStore.rewardManagement.dto.Customer;
+import com.myStore.rewardManagement.dto.MonthlyReward;
 import com.myStore.rewardManagement.dto.RewardsResponse;
 import com.myStore.rewardManagement.dto.Transaction;
 import com.myStore.rewardManagement.utility.DataUtility;
@@ -35,22 +36,17 @@ public class RewardsService {
                 .stream()
                 .collect(Collectors.groupingBy(Transaction::getCustomerId))
                 .forEach((id, transactions) -> {
-                    Map<String, Double> monthlyRewards = new HashMap<>();
+                    Map<Month, Double> monthlyRewards = new HashMap<>();
                     transactions.forEach(transaction -> {
                         Month transactionMonth = transaction.getTransactionTime().getMonth();
                         double rewardForTransaction = findRewardForTransaction(transaction.getTransactionAmount());
                         if (CollectionUtils.isEmpty(months)) {
-                            monthlyRewards.put(transactionMonth.name(), monthlyRewards.getOrDefault(transactionMonth.name(), 0.0) + rewardForTransaction);
-                            monthlyRewards.put(totalRewards, monthlyRewards.getOrDefault(totalRewards, 0.0) + rewardForTransaction);
+                            monthlyRewards.put(transactionMonth, monthlyRewards.getOrDefault(transactionMonth, 0.0) + rewardForTransaction);
                         } else if (months.contains(transactionMonth)) {
-                            monthlyRewards.put(transactionMonth.name(), monthlyRewards.getOrDefault(transactionMonth.name(), 0.0) + rewardForTransaction);
-                            monthlyRewards.put(totalRewards, monthlyRewards.getOrDefault(totalRewards, 0.0) + rewardForTransaction);
+                            monthlyRewards.put(transactionMonth, monthlyRewards.getOrDefault(transactionMonth, 0.0) + rewardForTransaction);
                         }
                     });
-                    rewardsResponses.add(RewardsResponse.builder()
-                            .customerDetails(customersList.get(id))
-                            .rewardPoints(monthlyRewards)
-                            .build());
+                    addRewardsResponses(rewardsResponses,customersList.get(id),monthlyRewards);
                 });
         return rewardsResponses;
     }
@@ -71,17 +67,13 @@ public class RewardsService {
                 .stream()
                 .collect(Collectors.groupingBy(Transaction::getCustomerId))
                 .forEach((id, transactions) -> {
-                    Map<String, Double> monthlyRewards = new HashMap<>();
+                    Map<Month, Double> monthlyRewards = new HashMap<>();
                     transactions.forEach(transaction -> {
                         Month transactionMonth = transaction.getTransactionTime().getMonth();
                         double rewardForTransaction = findRewardForTransaction(transaction.getTransactionAmount());
-                        monthlyRewards.put(transactionMonth.name(), monthlyRewards.getOrDefault(transactionMonth.name(), 0.0) + rewardForTransaction);
-                        monthlyRewards.put(totalRewards, monthlyRewards.getOrDefault(totalRewards, 0.0) + rewardForTransaction);
+                        monthlyRewards.put(transactionMonth, monthlyRewards.getOrDefault(transactionMonth, 0.0) + rewardForTransaction);
                     });
-                    rewardsResponses.add(RewardsResponse.builder()
-                            .customerDetails(customersList.get(id))
-                            .rewardPoints(monthlyRewards)
-                            .build());
+                    addRewardsResponses(rewardsResponses,customersList.get(id),monthlyRewards);
                 });
         return rewardsResponses;
     }
@@ -97,5 +89,26 @@ public class RewardsService {
             return 50 + (transactionAmount - 100) * 2;
         }
         return 0;
+    }
+
+    private void addRewardsResponses(List<RewardsResponse> rewardsResponseList, Customer customer, Map<Month, Double> monthlyRewards) {
+
+        List<MonthlyReward> monthlyRewardsList = new ArrayList<>();
+        monthlyRewards.forEach((month, rewards) -> {
+            monthlyRewardsList.add(MonthlyReward.builder()
+                    .month(month)
+                    .rewardPoints(rewards)
+                    .build());
+        });
+        double totalMonthlyRewards = monthlyRewardsList.stream()
+                .mapToDouble(MonthlyReward::getRewardPoints)
+                .sum();
+
+        rewardsResponseList.add(RewardsResponse.builder()
+                .customerDetails(customer)
+                .monthlyRewardPoints(monthlyRewardsList)
+                .totalRewardPoints(totalMonthlyRewards)
+                .build());
+
     }
 }

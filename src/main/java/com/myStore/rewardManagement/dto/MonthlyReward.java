@@ -5,15 +5,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.time.Month;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RewardsResponse {
+public class MonthlyReward {
 
-    private Customer customerDetails;
-    private List<MonthlyReward> monthlyRewardPoints;
-    private double totalRewardPoints;
+    private Month month;
+    private double rewardPoints;
 }

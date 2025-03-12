@@ -2,6 +2,7 @@ package com.myStore.rewardManagement.controller;
 
 import com.myStore.rewardManagement.dto.Address;
 import com.myStore.rewardManagement.dto.Customer;
+import com.myStore.rewardManagement.dto.MonthlyReward;
 import com.myStore.rewardManagement.dto.RewardsResponse;
 import com.myStore.rewardManagement.service.RewardsService;
 import org.junit.jupiter.api.DisplayName;
@@ -15,11 +16,9 @@ import org.springframework.http.ResponseEntity;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -48,7 +47,9 @@ public class RewardsControllerTest {
                                 .zip("zip1")
                                 .build())
                         .build())
-                .rewardPoints(Map.of("JANUARY", 20.0, "totalRewardPoints", 20.0))
+                .monthlyRewardPoints(
+                        List.of(MonthlyReward.builder().month(Month.JANUARY).rewardPoints(20).build()))
+                .totalRewardPoints(20)
                 .build());
 
         when(rewardsService.getRewards(List.of(Month.JANUARY), 1)).thenReturn(mockedResponse);
@@ -63,10 +64,10 @@ public class RewardsControllerTest {
         assertEquals("city1", actualResponse.getBody().getFirst().getCustomerDetails().getAddress().getCity());
         assertEquals("province1", actualResponse.getBody().getFirst().getCustomerDetails().getAddress().getProvince());
         assertEquals("zip1", actualResponse.getBody().getFirst().getCustomerDetails().getAddress().getZip());
-        assertEquals(20, actualResponse.getBody().getFirst().getRewardPoints().get("JANUARY"));
-        assertNull(actualResponse.getBody().getFirst().getRewardPoints().get("FEBRUARY"));
-        assertNull(actualResponse.getBody().getFirst().getRewardPoints().get("MARCH"));
-        assertEquals(20, actualResponse.getBody().getFirst().getRewardPoints().get("totalRewardPoints"));
+        assertEquals(1, actualResponse.getBody().getFirst().getMonthlyRewardPoints().size());
+        assertEquals(Month.JANUARY, actualResponse.getBody().getFirst().getMonthlyRewardPoints().getFirst().getMonth());
+        assertEquals(20, actualResponse.getBody().getFirst().getMonthlyRewardPoints().getFirst().getRewardPoints());
+        assertEquals(20, actualResponse.getBody().getFirst().getTotalRewardPoints());
     }
 
     @Test
@@ -85,7 +86,10 @@ public class RewardsControllerTest {
                                 .zip("zip1")
                                 .build())
                         .build())
-                .rewardPoints(Map.of("JANUARY", 20.0, "FEBRUARY", 40.0, "totalRewardPoints", 60.0))
+                .monthlyRewardPoints(
+                        List.of(MonthlyReward.builder().month(Month.JANUARY).rewardPoints(20).build(),
+                                MonthlyReward.builder().month(Month.FEBRUARY).rewardPoints(40).build()))
+                .totalRewardPoints(60)
                 .build());
 
         when(rewardsService.getRewardsForPeriod(1, Month.JANUARY, Month.FEBRUARY)).thenReturn(mockedResponse);
@@ -100,9 +104,11 @@ public class RewardsControllerTest {
         assertEquals("city1", actualResponse.getBody().getFirst().getCustomerDetails().getAddress().getCity());
         assertEquals("province1", actualResponse.getBody().getFirst().getCustomerDetails().getAddress().getProvince());
         assertEquals("zip1", actualResponse.getBody().getFirst().getCustomerDetails().getAddress().getZip());
-        assertEquals(20, actualResponse.getBody().getFirst().getRewardPoints().get("JANUARY"));
-        assertEquals(40, actualResponse.getBody().getFirst().getRewardPoints().get("FEBRUARY"));
-        assertNull(actualResponse.getBody().getFirst().getRewardPoints().get("MARCH"));
-        assertEquals(60, actualResponse.getBody().getFirst().getRewardPoints().get("totalRewardPoints"));
+        assertEquals(2, actualResponse.getBody().getFirst().getMonthlyRewardPoints().size());
+        assertEquals(Month.JANUARY, actualResponse.getBody().getFirst().getMonthlyRewardPoints().getFirst().getMonth());
+        assertEquals(20, actualResponse.getBody().getFirst().getMonthlyRewardPoints().getFirst().getRewardPoints());
+        assertEquals(Month.FEBRUARY, actualResponse.getBody().getFirst().getMonthlyRewardPoints().getLast().getMonth());
+        assertEquals(40, actualResponse.getBody().getFirst().getMonthlyRewardPoints().getLast().getRewardPoints());
+        assertEquals(60, actualResponse.getBody().getFirst().getTotalRewardPoints());
     }
 }

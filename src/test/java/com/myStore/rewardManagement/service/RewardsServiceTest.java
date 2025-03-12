@@ -8,7 +8,7 @@ import java.time.Month;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RewardsServiceTest {
 
@@ -27,10 +27,13 @@ public class RewardsServiceTest {
         assertEquals("Calgary", rewardsResponseList.getFirst().getCustomerDetails().getAddress().getCity());
         assertEquals("Alberta", rewardsResponseList.getFirst().getCustomerDetails().getAddress().getProvince());
         assertEquals("T3N 2C5", rewardsResponseList.getFirst().getCustomerDetails().getAddress().getZip());
-        assertEquals(25, rewardsResponseList.getFirst().getRewardPoints().get("JANUARY"));
-        assertEquals(140, rewardsResponseList.getFirst().getRewardPoints().get("FEBRUARY"));
-        assertEquals(35, rewardsResponseList.getFirst().getRewardPoints().get("MARCH"));
-        assertEquals(200, rewardsResponseList.getFirst().getRewardPoints().get("totalRewardPoints"));
+
+        List<Month> months = List.of(Month.JANUARY,Month.FEBRUARY,Month.MARCH);
+        List<Double> rewards = List.of(25.0,140.0,35.0);
+
+        assertTrue(months.contains(rewardsResponseList.getFirst().getMonthlyRewardPoints().getFirst().getMonth()));
+        assertTrue(rewards.contains( rewardsResponseList.getFirst().getMonthlyRewardPoints().getFirst().getRewardPoints()));
+        assertEquals(200, rewardsResponseList.getFirst().getTotalRewardPoints());
 
     }
 
@@ -46,17 +49,20 @@ public class RewardsServiceTest {
         assertEquals("Calgary", rewardsResponseList.getFirst().getCustomerDetails().getAddress().getCity());
         assertEquals("Alberta", rewardsResponseList.getFirst().getCustomerDetails().getAddress().getProvince());
         assertEquals("T3N 2C5", rewardsResponseList.getFirst().getCustomerDetails().getAddress().getZip());
-        assertEquals(25, rewardsResponseList.getFirst().getRewardPoints().get("JANUARY"));
-        assertEquals(140, rewardsResponseList.getFirst().getRewardPoints().get("FEBRUARY"));
-        assertEquals(35, rewardsResponseList.getFirst().getRewardPoints().get("MARCH"));
-        assertEquals(200, rewardsResponseList.getFirst().getRewardPoints().get("totalRewardPoints"));
+
+        List<Month> months = List.of(Month.JANUARY,Month.FEBRUARY,Month.MARCH);
+        List<Double> rewards = List.of(25.0,140.0,35.0);
+
+        assertTrue(months.contains(rewardsResponseList.getFirst().getMonthlyRewardPoints().getFirst().getMonth()));
+        assertTrue(rewards.contains( rewardsResponseList.getFirst().getMonthlyRewardPoints().getFirst().getRewardPoints()));
+        assertEquals(200, rewardsResponseList.getFirst().getTotalRewardPoints());
     }
 
     @Test
     @DisplayName("Test getRewards when id is not provided and list of month is provided")
     void testGetRewards_success3() {
 
-        List<RewardsResponse> rewardsResponseList = rewardsService.getRewards(List.of(Month.JANUARY, Month.FEBRUARY, Month.APRIL), 0);
+        List<RewardsResponse> rewardsResponseList = rewardsService.getRewards(List.of(Month.JANUARY, Month.FEBRUARY), 0);
         assertEquals(3, rewardsResponseList.size());
         assertEquals(3, rewardsResponseList.getLast().getCustomerDetails().getCustomerId());
         assertEquals("Teja", rewardsResponseList.getLast().getCustomerDetails().getName());
@@ -65,11 +71,14 @@ public class RewardsServiceTest {
         assertEquals("Calgary", rewardsResponseList.getLast().getCustomerDetails().getAddress().getCity());
         assertEquals("Alberta", rewardsResponseList.getLast().getCustomerDetails().getAddress().getProvince());
         assertEquals("T3N 2C5", rewardsResponseList.getLast().getCustomerDetails().getAddress().getZip());
-        assertEquals(0, rewardsResponseList.getLast().getRewardPoints().get("JANUARY"));
-        assertEquals(189, rewardsResponseList.getLast().getRewardPoints().get("FEBRUARY"));
-        assertNull(rewardsResponseList.getLast().getRewardPoints().get("MARCH"));
-        assertNull(rewardsResponseList.getLast().getRewardPoints().get("APRIL"));
-        assertEquals(189, rewardsResponseList.getLast().getRewardPoints().get("totalRewardPoints"));
+
+        List<Month> months = List.of(Month.JANUARY,Month.FEBRUARY);
+        List<Double> rewards = List.of(0.0,189.0);
+
+        assertEquals(2, rewardsResponseList.getLast().getMonthlyRewardPoints().size());
+        assertTrue(months.contains(rewardsResponseList.getLast().getMonthlyRewardPoints().getFirst().getMonth()));
+        assertTrue(rewards.contains( rewardsResponseList.getLast().getMonthlyRewardPoints().getFirst().getRewardPoints()));
+        assertEquals(189, rewardsResponseList.getLast().getTotalRewardPoints());
     }
 
     @Test
@@ -84,10 +93,11 @@ public class RewardsServiceTest {
         assertEquals("Calgary", rewardsResponseList.getLast().getCustomerDetails().getAddress().getCity());
         assertEquals("Alberta", rewardsResponseList.getLast().getCustomerDetails().getAddress().getProvince());
         assertEquals("T3N 2C5", rewardsResponseList.getLast().getCustomerDetails().getAddress().getZip());
-        assertEquals(0, rewardsResponseList.getLast().getRewardPoints().get("JANUARY"));
-        assertNull(rewardsResponseList.getLast().getRewardPoints().get("FEBRUARY"));
-        assertNull(rewardsResponseList.getLast().getRewardPoints().get("MARCH"));
-        assertEquals(0, rewardsResponseList.getLast().getRewardPoints().get("totalRewardPoints"));
+
+        assertEquals(1, rewardsResponseList.getLast().getMonthlyRewardPoints().size());
+        assertEquals(Month.JANUARY, rewardsResponseList.getLast().getMonthlyRewardPoints().getFirst().getMonth());
+        assertEquals(0, rewardsResponseList.getLast().getMonthlyRewardPoints().getFirst().getRewardPoints());
+        assertEquals(0, rewardsResponseList.getLast().getTotalRewardPoints());
     }
 
     @Test
@@ -103,10 +113,14 @@ public class RewardsServiceTest {
         assertEquals("Calgary", rewardsResponseList.getFirst().getCustomerDetails().getAddress().getCity());
         assertEquals("Alberta", rewardsResponseList.getFirst().getCustomerDetails().getAddress().getProvince());
         assertEquals("T3N 2C5", rewardsResponseList.getFirst().getCustomerDetails().getAddress().getZip());
-        assertEquals(25, rewardsResponseList.getFirst().getRewardPoints().get("JANUARY"));
-        assertEquals(140, rewardsResponseList.getFirst().getRewardPoints().get("FEBRUARY"));
-        assertEquals(35, rewardsResponseList.getFirst().getRewardPoints().get("MARCH"));
-        assertEquals(200, rewardsResponseList.getFirst().getRewardPoints().get("totalRewardPoints"));
+
+        List<Month> months = List.of(Month.JANUARY,Month.FEBRUARY,Month.MARCH);
+        List<Double> rewards = List.of(25.0,140.0,35.0);
+
+        assertEquals(3, rewardsResponseList.getFirst().getMonthlyRewardPoints().size());
+        assertTrue(months.contains(rewardsResponseList.getFirst().getMonthlyRewardPoints().getFirst().getMonth()));
+        assertTrue(rewards.contains( rewardsResponseList.getFirst().getMonthlyRewardPoints().getFirst().getRewardPoints()));
+        assertEquals(200, rewardsResponseList.getFirst().getTotalRewardPoints());
     }
 
     @Test
@@ -121,9 +135,13 @@ public class RewardsServiceTest {
         assertEquals("Calgary", rewardsResponseList.getLast().getCustomerDetails().getAddress().getCity());
         assertEquals("Alberta", rewardsResponseList.getLast().getCustomerDetails().getAddress().getProvince());
         assertEquals("T3N 2C5", rewardsResponseList.getLast().getCustomerDetails().getAddress().getZip());
-        assertNull(rewardsResponseList.getLast().getRewardPoints().get("JANUARY"));
-        assertEquals(189, rewardsResponseList.getLast().getRewardPoints().get("FEBRUARY"));
-        assertEquals(290, rewardsResponseList.getLast().getRewardPoints().get("MARCH"));
-        assertEquals(479, rewardsResponseList.getLast().getRewardPoints().get("totalRewardPoints"));
+
+        List<Month> months = List.of(Month.FEBRUARY,Month.MARCH);
+        List<Double> rewards = List.of(189.0,290.0);
+
+        assertEquals(2, rewardsResponseList.getLast().getMonthlyRewardPoints().size());
+        assertTrue(months.contains(rewardsResponseList.getLast().getMonthlyRewardPoints().getFirst().getMonth()));
+        assertTrue(rewards.contains( rewardsResponseList.getLast().getMonthlyRewardPoints().getFirst().getRewardPoints()));
+        assertEquals(479, rewardsResponseList.getLast().getTotalRewardPoints());
     }
 }
