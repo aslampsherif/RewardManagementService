@@ -106,7 +106,8 @@ Follow below steps to run application locally
                     ]
 ### Initial data setup.
 
-To validate the endpoints, customer([Customers.json](src/main/resources/data/Customers.json)) and transaction([Transactions.json](src/main/resources/data/Transactions.json)) details are stored in json file. Utility class [DataUtility.java](src/main/java/com/myStore/rewardManagement/utility/DataUtility.java) is used to get these values and send to service layer
+To validate the endpoints, customer([Customers.json](src/main/resources/data/Customers.json)) and transaction([Transactions.json](src/main/resources/data/Transactions.json)) details are stored in json file. Utility class [DataUtility.java](src/main/java/com/myStore/rewardManagement/utility/DataUtility.java) is used to get these values and send to service layer.  
+Test results are uploaded in [Endpoint test results.pdf](endpointTestsResults/Endpoint%20test%20results.pdf)
 
 | Customer | Month 1 Transactions | Month 2 Transactions | Month 3 Transactions |
 |----------|----------------------|----------------------|----------------------| 
